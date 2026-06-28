@@ -555,7 +555,8 @@
         reportSent: false,
         gridValues: {},
         carryStates: {},
-        addCarryValues: {}
+        addCarryValues: {},
+        currentScreen: 'register'
     };
 
     let lastFocusedInputId = null;
@@ -1123,12 +1124,7 @@
             }
         }
         showHintAlert("فوق‌العاده‌ای قهرمانم! همه‌ی مراحل رو کاملاً درست حل کردی! 🌟");
-        if(state.currentGameUsedHint) {
-            document.getElementById('newQBtn').classList.remove('btn-hidden');
-            document.getElementById('finishBtn').classList.add('btn-hidden');
-        } else {
-            document.getElementById('finishBtn').classList.remove('btn-hidden');
-        }
+        document.getElementById('finishBtn').classList.remove('btn-hidden');
     }
 
     function showHintAlert(msg) {
@@ -1171,23 +1167,31 @@
 
     async function finishSession() {
         const earnedThisGame = state.currentGameUsedHint ? 0 : 1;
+        
+        state.totalPlays = state.totalPlays + 1;
+        if (earnedThisGame === 1) {
+            state.stars = state.stars + 1;
+        }
+        state.currentScreen = 'report';
+        
+        state.gridValues = {}; 
+        state.carryStates = {}; 
+        state.addCarryValues = {};
+        
+        clearGameState();
+        saveProfile();
+
         showScreen('portal-submitting-screen');
         await Portal.submitProgress(earnedThisGame, {
             onSuccess: (data) => {
                 state.totalPlays = data.plays;
                 state.stars = data.stars;
-                state.gridValues = {}; 
-                state.carryStates = {}; 
-                state.addCarryValues = {};
-                clearGameState();
                 saveProfile();
                 updateStats();
                 showScreen('screen-report');
                 renderReport(data.goalReached, data.stars);
             },
             onFailure: (err) => {
-                showScreen('screen-report');
-                renderReport(state.stars >= Portal.requiredStars, state.stars);
             }
         });
     }
@@ -1254,6 +1258,8 @@
     }
 
     function restartGame() { 
+        state.currentScreen = 'game';
+        saveProfile();
         showScreen('screen-game'); 
         updateStats(); 
         newQuestion(); 
@@ -1343,6 +1349,7 @@
                     try {
                         state = JSON.parse(saved);
                         if (typeof state.currentGameUsedHint === 'undefined') state.currentGameUsedHint = false;
+                        if (typeof state.currentScreen === 'undefined') state.currentScreen = 'register';
                     } catch (e) {}
                 } else {
                     state = {
@@ -1354,7 +1361,8 @@
                         reportSent: false,
                         gridValues: {},
                         carryStates: {},
-                        addCarryValues: {}
+                        addCarryValues: {},
+                        currentScreen: 'register'
                     };
                 }
                 
@@ -1389,6 +1397,9 @@
                     document.getElementById('ast-stars').textContent = toPersianNum(state.stars) + ' ⭐';
                     document.getElementById('ast-req-stars').textContent = toPersianNum(Portal.requiredStars) + ' ⭐';
                     showScreen('screen-assistant');
+                } else if (state.currentScreen === 'report') {
+                    showScreen('screen-report');
+                    renderReport(state.stars >= Portal.requiredStars, state.stars);
                 } else if (state.currentProblem && activeState) {
                     showScreen('screen-game');
                     loadState();
@@ -1422,6 +1433,7 @@
 
     document.getElementById('startGame').onclick = () => {
         state.currentGameUsedHint = false;
+        state.currentScreen = 'game';
         const activeState = checkSavedUnfinishedState();
         if (activeState) {
             loadState();
@@ -1432,6 +1444,7 @@
         }
         showScreen('screen-game');
         updateStats();
+        saveProfile();
     };
 
     document.addEventListener('DOMContentLoaded', () => {
