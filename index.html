@@ -336,7 +336,7 @@
         </div>
     </div>
 
-    <div id="screen-report" class="screen" style="display: none;">
+    <div id="screen-report" class="page-container" style="display: none;">
         <h2>کارنامه عملکرد</h2>
         <div style="text-align: right; background: #fafafa; padding: 15px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 20px;">
             <p><strong>مدرسه:</strong> دبستان معاد خرگوشی</p>
@@ -397,7 +397,7 @@
         }
     }
 
-    function loadProfile() {
+    function loadProfileState() {
         const stored = localStorage.getItem(STORAGE);
         if (stored) {
             try { 
@@ -414,7 +414,7 @@
         if (typeof profileState.currentScreen === 'undefined') profileState.currentScreen = 'register';
     }
 
-    function saveProfile() { localStorage.setItem(STORAGE, JSON.stringify(profileState)); }
+    function saveProfileState() { localStorage.setItem(STORAGE, JSON.stringify(profileState)); }
 
     function saveGridState() {
         gameState.gridValues = {};
@@ -516,17 +516,17 @@
     }
 
     function registerUser() {
-        loadProfile();
+        loadProfileState();
         profileState.hasEntered = true;
         profileState.currentScreen = 'game';
-        saveProfile();
+        saveProfileState();
         startGameAutomatically();
     }
 
     function updateStats() {
         const starsEl = document.getElementById('dispStars');
         const nameEl = document.getElementById('dispName');
-        if(starsEl) starsEl.innerText = toPersianNum(profileState.totalStars);
+        if(starsEl) starsEl.innerText = toPersianDigits(profileState.totalStars);
         if(nameEl) nameEl.innerText = profileState.studentName;
     }
 
@@ -583,8 +583,8 @@
 
     function handleCarryInput(el) {
         if(el.value) {
-            let engVal = toEnglishNum(el.value);
-            el.value = !isNaN(engVal) ? toPersianNum(engVal) : "";
+            let engVal = toEnglishDigits(el.value);
+            el.value = !isNaN(engVal) ? toPersianDigits(engVal) : "";
         }
         checkCarryFilled(); 
         saveGridState();
@@ -609,16 +609,16 @@
         let html = '<div class="math-grid">';
         
         html += `<div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>`;
-        html += `<div class="cell" id="q_top_0">${toPersianNum(n1Str[0])}</div>`; 
-        html += `<div class="cell" id="q_top_1">${toPersianNum(n1Str[1])}</div>`; 
-        html += `<div class="cell" id="q_top_2">${toPersianNum(n1Str[2])}</div>`; 
+        html += `<div class="cell" id="q_top_0">${toPersianDigits(n1Str[0])}</div>`; 
+        html += `<div class="cell" id="q_top_1">${toPersianDigits(n1Str[1])}</div>`; 
+        html += `<div class="cell" id="q_top_2">${toPersianDigits(n1Str[2])}</div>`; 
         html += `<div class="cell"></div>`;
 
         html += `<div class="operator">×</div>`;
         html += `<div class="cell"></div><div class="cell"></div><div class="cell"></div>`;
-        html += `<div class="cell" id="q_bot_0">${toPersianNum(n2Str[0])}</div>`;
-        html += `<div class="cell" id="q_bot_1">${toPersianNum(n2Str[1])}</div>`;
-        html += `<div class="cell" id="q_bot_2">${toPersianNum(n2Str[2])}</div>`;
+        html += `<div class="cell" id="q_bot_0">${toPersianDigits(n2Str[0])}</div>`;
+        html += `<div class="cell" id="q_bot_1">${toPersianDigits(n2Str[1])}</div>`;
+        html += `<div class="cell" id="q_bot_2">${toPersianDigits(n2Str[2])}</div>`;
         html += `<div class="cell"></div>`;
 
         html += `<div class="line"></div>`;
@@ -678,8 +678,8 @@
     function handleInput(el, rowIdx) {
         if(el.readOnly) return; 
         if(el.value) { 
-            let engVal = toEnglishNum(el.value); 
-            el.value = !isNaN(engVal) ? toPersianNum(engVal) : ""; 
+            let engVal = toEnglishDigits(el.value); 
+            el.value = !isNaN(engVal) ? toPersianDigits(engVal) : ""; 
             
             if(el.value.length === 1) {
                 const parts = el.id.split('_');
@@ -727,7 +727,7 @@
         let rowIsCorrect = true;
         document.querySelectorAll(`input[id^="inp_${rowIdx}_"]`).forEach(inp => {
             const col = parseInt(inp.id.split('_')[2]);
-            if(toEnglishNum(inp.value) == expectedStr[col]) { inp.classList.add('correct-input'); inp.classList.remove('wrong-input'); }
+            if(toEnglishDigits(inp.value) == expectedStr[col]) { inp.classList.add('correct-input'); inp.classList.remove('wrong-input'); }
             else { 
                 if(inp.value !== "") { inp.classList.add('wrong-input'); inp.classList.remove('correct-input'); rowIsCorrect = false; }
                 else { rowIsCorrect = false; }
@@ -764,7 +764,7 @@
             if (!box.value) { targetBox = box; break; }
         }
         if (targetBox) {
-            targetBox.value = toPersianNum(val);
+            targetBox.value = toPersianDigits(val);
             targetBox.classList.remove('used'); targetBox.classList.add('active-carry'); 
             flashElement(targetBox); 
             checkCarryFilled(); saveGridState(); 
@@ -774,7 +774,7 @@
     function markCarryUsed(val) {
         const boxes = [document.getElementById('carry_0'), document.getElementById('carry_1'), document.getElementById('carry_2')];
         for(let box of boxes) {
-            if(box.value && toEnglishNum(box.value) == val && !box.classList.contains('used')) {
+            if(box.value && toEnglishDigits(box.value) == val && !box.classList.contains('used')) {
                 box.classList.add('used'); box.classList.remove('active-carry');
                 checkCarryFilled(); saveGridState(); return;
             }
@@ -851,7 +851,7 @@
                 const zInp = document.getElementById(`inp_2_6`);
                 if(zInp && !zInp.value) {
                     resetCarryOver(); 
-                    zInp.value = toPersianNum(0); zInp.classList.add('correct-input');
+                    zInp.value = toPersianDigits(0); zInp.classList.add('correct-input');
                     flashElement(zInp);
                     showHintAlert("چون در حال ضرب دهگان هستیم، ابتدا یک <b>صفر</b> قرار می‌دهیم. (جعبه انتقال پاک شد)");
                     saveGridState(); checkRowFilled(r); return;
@@ -862,13 +862,13 @@
                 const zInp2 = document.getElementById(`inp_3_5`);
                 if(zInp1 && !zInp1.value) {
                     resetCarryOver(); 
-                    zInp1.value = toPersianNum(0); zInp1.classList.add('correct-input');
+                    zInp1.value = toPersianDigits(0); zInp1.classList.add('correct-input');
                     flashElement(zInp1);
                     showHintAlert("چون در حال ضرب صدگان هستیم، ابتدا صفر اول را می‌گذاریم. (جعبه انتقال پاک شد)");
                     saveGridState(); checkRowFilled(r); return;
                 }
                 if(zInp2 && !zInp2.value) {
-                    zInp2.value = toPersianNum(0); zInp2.classList.add('correct-input');
+                    zInp2.value = toPersianDigits(0); zInp2.classList.add('correct-input');
                     flashElement(zInp2);
                     showHintAlert("سپس صفر دوم را برای صدگان می‌گذاریم.");
                     saveGridState(); checkRowFilled(r); return;
@@ -891,7 +891,7 @@
                     if (step > 0) {
                          const carryBoxes = [document.getElementById('carry_0'), document.getElementById('carry_1'), document.getElementById('carry_2')];
                          const availableCarry = Array.from(carryBoxes).find(b => b.value && !b.classList.contains('used'));
-                         if(availableCarry) { currentCarry = parseInt(toEnglishNum(availableCarry.value)); }
+                         if(availableCarry) { currentCarry = parseInt(toEnglishDigits(availableCarry.value)); }
                     }
                     
                     const product = (topDigit * multiplierDigit) + currentCarry;
@@ -905,27 +905,27 @@
                         document.getElementById(`q_bot_${3-r}`).classList.add('highlight-digit');
                         document.getElementById(`q_top_${2-step}`).classList.add('highlight-digit');
 
-                        let msg = `ضرب <b>${multiplierPlace}</b> (${toPersianNum(multiplierDigit)}) در <b>${topPlace}</b> (${toPersianNum(topDigit)}). `;
-                        msg += `حاصل: ${toPersianNum(topDigit*multiplierDigit)}. `;
+                        let msg = `ضرب <b>${multiplierPlace}</b> (${toPersianDigits(multiplierDigit)}) در <b>${topPlace}</b> (${toPersianDigits(topDigit)}). `;
+                        msg += `حاصل: ${toPersianDigits(topDigit*multiplierDigit)}. `;
                         
                         if(currentCarry > 0) {
-                            msg += `بعلاوه ${toPersianNum(currentCarry)} (انتقال): ${toPersianNum(product)}. `;
+                            msg += `بعلاوه ${toPersianDigits(currentCarry)} (انتقال): ${toPersianDigits(product)}. `;
                             markCarryUsed(currentCarry);
                         }
                         
                         if(step === 2 && newCarry > 0) {
                             const carryInp = document.getElementById(`inp_${r}_${targetCol-1}`);
                             if(carryInp) {
-                                inp.value = toPersianNum(writeDigit); inp.classList.add('correct-input'); flashElement(inp);
-                                carryInp.value = toPersianNum(newCarry); carryInp.classList.add('correct-input'); flashElement(carryInp);
-                                msg += `<br>رقم آخر است، پس ${toPersianNum(product)} کامل نوشته می‌شود.`;
-                            } else { inp.value = toPersianNum(writeDigit); flashElement(inp); }
+                                inp.value = toPersianDigits(writeDigit); inp.classList.add('correct-input'); flashElement(inp);
+                                carryInp.value = toPersianDigits(newCarry); carryInp.classList.add('correct-input'); flashElement(carryInp);
+                                msg += `<br>رقم آخر است، پس ${toPersianDigits(product)} کامل نوشته می‌شود.`;
+                            } else { inp.value = toPersianDigits(writeDigit); flashElement(inp); }
                         } else {
-                            inp.value = toPersianNum(writeDigit); inp.classList.add('correct-input'); flashElement(inp);
+                            inp.value = toPersianDigits(writeDigit); inp.classList.add('correct-input'); flashElement(inp);
                             if(newCarry > 0) {
-                                msg += `<br>${toPersianNum(writeDigit)} را می‌نویسیم و <b>${toPersianNum(newCarry)}</b> را منتقل می‌کنیم.`;
+                                msg += `<br>${toPersianDigits(writeDigit)} را می‌نویسیم و <b>${toPersianDigits(newCarry)}</b> را منتقل می‌کنیم.`;
                                 setCarryInBox(newCarry);
-                            } else { msg += `<br>${toPersianNum(writeDigit)} را می‌نویسیم.`; }
+                            } else { msg += `<br>${toPersianDigits(writeDigit)} را می‌نویسیم.`; }
                         }
                         showHintAlert(msg); saveGridState(); checkRowFilled(r); return;
                     }
@@ -938,9 +938,9 @@
                      const inp2 = document.getElementById(`inp_2_${i}`);
                      const inp3 = document.getElementById(`inp_3_${i}`);
                      
-                     const val1 = inp1 && inp1.value ? parseInt(toEnglishNum(inp1.value)) : 0;
-                     const val2 = inp2 && inp2.value ? parseInt(toEnglishNum(inp2.value)) : 0;
-                     const val3 = inp3 && inp3.value ? parseInt(toEnglishNum(inp3.value)) : 0;
+                     const val1 = inp1 && inp1.value ? parseInt(toEnglishDigits(inp1.value)) : 0;
+                     const val2 = inp2 && inp2.value ? parseInt(toEnglishDigits(inp2.value)) : 0;
+                     const val3 = inp3 && inp3.value ? parseInt(toEnglishDigits(inp3.value)) : 0;
                      
                      const sum = val1 + val2 + val3 + pendingCarry;
                      const writeDigit = sum % 10;
@@ -953,23 +953,23 @@
                          if(inp2) inp2.parentElement.classList.add('col-highlight');
                          if(inp3) inp3.parentElement.classList.add('col-highlight');
                          
-                         resultInp.value = toPersianNum(writeDigit);
+                         resultInp.value = toPersianDigits(writeDigit);
                          resultInp.classList.add('correct-input');
                          flashElement(resultInp);
                          
-                         let msg = `جمع ستون: ${toPersianNum(val1)} + ${toPersianNum(val2)} + ${toPersianNum(val3)}`;
-                         if(pendingCarry > 0) msg += ` + <span style="color:red; font-weight:bold">${toPersianNum(pendingCarry)}</span> (انتقالی)`;
-                         msg += ` = ${toPersianNum(sum)}.`;
+                         let msg = `جمع ستون: ${toPersianDigits(val1)} + ${toPersianDigits(val2)} + ${toPersianDigits(val3)}`;
+                         if(pendingCarry > 0) msg += ` + <span style="color:red; font-weight:bold">${toPersianDigits(pendingCarry)}</span> (انتقالی)`;
+                         msg += ` = ${toPersianDigits(sum)}.`;
                          
                          if(newCarry > 0) {
-                             msg += `<br>${toPersianNum(writeDigit)} را می‌نویسیم و <span style="color:red; font-weight:bold">${toPersianNum(newCarry)}</span> را بالای ستون بعد می‌بریم.`;
+                             msg += `<br>${toPersianDigits(writeDigit)} را می‌نویسیم و <span style="color:red; font-weight:bold">${toPersianDigits(newCarry)}</span> را بالای ستون بعد می‌بریم.`;
                              const carryCell = document.getElementById(`ac_${i-1}`);
                              if(carryCell) {
-                                 carryCell.innerText = toPersianNum(newCarry);
+                                 carryCell.innerText = toPersianDigits(newCarry);
                                  flashElement(carryCell); 
                              }
                          } else {
-                             msg += `<br>${toPersianNum(writeDigit)} را می‌نویسیم.`;
+                             msg += `<br>${toPersianDigits(writeDigit)} را می‌نویسیم.`;
                          }
                          
                          showHintAlert(msg);
@@ -1002,8 +1002,8 @@
 
         document.getElementById('repName').innerText = profileState.studentName;
         document.getElementById('repDate').innerText = dateStr;
-        document.getElementById('repPlays').innerText = toPersianNum(profileState.totalGames);
-        document.getElementById('repStars').innerText = toPersianNum(profileState.totalStars);
+        document.getElementById('repPlays').innerText = toPersianDigits(profileState.totalGames);
+        document.getElementById('repStars').innerText = toPersianDigits(profileState.totalStars);
     }
 
     async function finishSession() {
@@ -1013,12 +1013,12 @@
         }
         
         const earnedThisGame = 1;
-        loadProfile();
+        loadProfileState();
         profileState.totalGames++;
         profileState.totalStars += earnedThisGame;
         profileState.currentScreen = 'report';
         profileState.hasEntered = true;
-        saveProfile();
+        saveProfileState();
         clearGameState();
 
         if (Portal.isPortalMode) {
@@ -1028,7 +1028,7 @@
                     profileState.totalGames = data.plays;
                     profileState.totalStars = data.stars;
                     profileState.currentScreen = 'report';
-                    saveProfile();
+                    saveProfileState();
                     updateStats();
                     showScreen('screen-report');
                     populateReportData();
@@ -1068,7 +1068,7 @@
                 backInstruction.style.display = 'block';
             } else {
                 const remaining = Portal.requiredStars - stars;
-                submitBadge.innerHTML = `✨ آفرین دانش‌آموز زرنگم! تو <b>${toPersianNum(stars)}</b> ستاره از <b>${toPersianNum(Portal.requiredStars)}</b> ستاره‌ی این تکلیف رو گرفتی! ⭐ فقط به <b>${toPersianNum(remaining)}</b> ستاره‌ی دیگه نیاز داری تا تیک تکلیف بخوره. بدو برو بعدی رو حل کن! 🏆`;
+                submitBadge.innerHTML = `✨ آفرین دانش‌آموز زرنگم! تو <b>${toPersianDigits(stars)}</b> ستاره از <b>${toPersianDigits(Portal.requiredStars)}</b> ستاره‌ی این تکلیف رو گرفتی! ⭐ فقط به <b>${toPersianDigits(remaining)}</b> ستاره‌ی دیگه نیاز داری تا تیک تکلیف بخوره. بدو برو بعدی رو حل کن! 🏆`;
                 submitBadge.style.display = 'block';
                 if (restartBtn) {
                     restartBtn.style.display = 'block';
@@ -1092,9 +1092,9 @@
     }
 
     function restartGame() { 
-        loadProfile();
+        loadProfileState();
         profileState.currentScreen = 'game';
-        saveProfile();
+        saveProfileState();
         showScreen('screen-game'); 
         updateStats(); 
         newQuestion(); 
@@ -1104,12 +1104,12 @@
         showScreen('portal-submitting-screen');
         await Portal.submitProgress(null, {
             onSuccess: (data) => {
-                loadProfile();
+                loadProfileState();
                 profileState.totalGames = data.plays;
                 profileState.totalStars = data.stars;
                 profileState.hasEntered = true;
                 profileState.currentScreen = 'report';
-                saveProfile();
+                saveProfileState();
                 
                 showScreen('screen-report');
                 populateReportData();
@@ -1122,7 +1122,7 @@
     };
 
     const startGameAutomatically = () => {
-        loadProfile();
+        loadProfileState();
         const savedState = checkSavedUnfinishedState();
         if (savedState && savedState.currentProblem) {
             renderGrid(savedState.currentProblem);
@@ -1140,11 +1140,11 @@
                 STORAGE = `studentProfile_3x3Mult_${Portal.studentId}_${Portal.homeworkId}`;
                 GAME_STATE_STORAGE = `gameState_3x3Mult_${Portal.studentId}_${Portal.homeworkId}`;
                 
-                loadProfile();
+                loadProfileState();
                 profileState.studentName = data.name || Portal.studentName || profileState.studentName || "دانش‌آموز";
                 profileState.totalGames = data.plays !== undefined ? data.plays : profileState.totalGames;
                 profileState.totalStars = data.stars !== undefined ? data.stars : profileState.totalStars;
-                saveProfile();
+                saveProfileState();
 
                 const savedState = checkSavedUnfinishedState();
                 const startBtn = document.getElementById('startButton');
@@ -1163,8 +1163,8 @@
                 if (hasUnsentStar) {
                     document.getElementById('ast-welcome').textContent = `سلام ${profileState.studentName} عزیز! 🌟`;
                     document.getElementById('ast-name').textContent = profileState.studentName;
-                    document.getElementById('ast-stars').textContent = toPersianNum(profileState.totalStars) + ' ⭐';
-                    document.getElementById('ast-req-stars').textContent = toPersianNum(Portal.requiredStars) + ' ⭐';
+                    document.getElementById('ast-stars').textContent = toPersianDigits(profileState.totalStars) + ' ⭐';
+                    document.getElementById('ast-req-stars').textContent = toPersianDigits(Portal.requiredStars) + ' ⭐';
                     showScreen('screen-assistant');
                 } else if (profileState.currentScreen === 'report') {
                     showScreen('screen-report');
@@ -1180,9 +1180,9 @@
                     document.getElementById('startButton').style.display = 'inline-block';
 
                     document.getElementById('portal-student-name').textContent = profileState.studentName;
-                    document.getElementById('portal-prev-plays').textContent = toPersianNum(profileState.totalGames);
-                    document.getElementById('portal-prev-stars').textContent = toPersianNum(profileState.totalStars) + ' ⭐';
-                    document.getElementById('portal-req-stars').textContent = toPersianNum(Portal.requiredStars) + ' ⭐';
+                    document.getElementById('portal-prev-plays').textContent = toPersianDigits(profileState.totalGames);
+                    document.getElementById('portal-prev-stars').textContent = toPersianDigits(profileState.totalStars) + ' ⭐';
+                    document.getElementById('portal-req-stars').textContent = toPersianDigits(Portal.requiredStars) + ' ⭐';
                 }
             },
             onFailure: (err) => {
@@ -1225,14 +1225,16 @@
         }
     });
 
-    function toEnglishNum(str) { 
+    const toEnglishDigits = (str) => {
         if (str === null || str === undefined) return '';
-        return String(str).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); 
-    }
-    function toPersianNum(num) { 
+        const persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        return String(str).replace(/[۰-۹]/g, (d) => persian.indexOf(d)).replace(/[^0-9]/g, '');
+    };
+    const toPersianDigits = (num) => {
         if (num === null || num === undefined) return '';
-        return String(num).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); 
-    }
+        const persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        return String(num).replace(/[0-9]/g, (digit) => persian[parseInt(digit)]);
+    };
 </script>
 </body>
 </html>
