@@ -228,6 +228,8 @@
 <body>
 
 <div class="container">
+    <span class="school-name">دبستان معاد خرگوشی</span>
+
     <div id="Screen-Loading" class="screen" style="display: none; min-height: 320px;">
         <div style="font-size: 3.5rem; margin-bottom: 15px;">🐇</div>
         <h2 style="color:#2980b9; margin-bottom:30px; font-weight: bold;">ضرب سه رقم در سه رقم</h2>
@@ -305,7 +307,7 @@
             <p style="font-size: 12pt; color: #333; margin: 0;">
                 بازی قبلی‌ات با موفقیت تمام شده بود، اما به خاطر قطع شدن اینترنت، ستاره‌ی طلایی‌ات به دفتر کلاسی معلم نرسیده بود. 
                 <br/>
-                اصلاً نگذار نگران باشی! نیازی به بازی دوباره نیست. دکمه زیر را بزن تا ستاره‌ات ثبت بشه و کارنامه‌اش رو ببینی. 😊
+                اصلاً نگذار نگران باشی! نیازی به بازی دوباره نیست. دکمه زیر را بزن تا ستاره‌ی طلایی‌ات ثبت بشه و کارنامه‌اش رو ببینی. 😊
             </p>
         </div>
         
@@ -365,7 +367,7 @@
 
         <div id="portal-back-instruction" style="display:none; width: 100%;"></div>
 
-        <button id="restartBtn" class="btn" style="width: 100%; margin: 10px auto;" onclick="restartGame()">تمرین دوباره</button>
+        <button id="restartBtn" class="btn" onclick="restartGame()">تمرین دوباره</button>
     </div>
 </div>
 
@@ -587,7 +589,7 @@
         gameState.carryStates = {}; 
         gameState.addCarryValues = {};
         lastFocusedInputId = null; 
-        saveGameState();
+        localStorage.setItem(GAME_STATE_STORAGE, JSON.stringify(gameState));
         
         renderGrid(gameState.currentProblem);
         resetCarryOver(); 
@@ -1128,7 +1130,7 @@
         gameState.currentScreen = 'game';
         saveProfileState();
         showScreen('screen-game'); 
-        updateStats(); 
+        updateProfileUI(); 
         newQuestion(); 
     }
 
@@ -1275,16 +1277,16 @@
         }
     });
 
-    const toEnglishDigits = (str) => {
+    function toEnglishDigits(str) { 
         if (str === null || str === undefined) return '';
         const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
         return String(str).replace(/[۰-۹]/g, (d) => farsi.indexOf(d)).replace(/[^0-9]/g, '');
-    };
-    const toPersianDigits = (num) => {
+    }
+    function toPersianDigits(num) { 
         if (num === null || num === undefined) return '';
         const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
         return String(num).replace(/[0-9]/g, (digit) => farsi[parseInt(digit)]);
-    };
+    }
 </script>
 </body>
 </html>
