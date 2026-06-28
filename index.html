@@ -367,11 +367,23 @@
 
         <div id="portal-back-instruction" style="display:none; width: 100%;"></div>
 
-        <button id="restartBtn" class="btn" onclick="restartGame()">تمرین دوباره</button>
+        <button id="restartBtn" class="btn" style="width: 100%; margin: 10px auto;" onclick="restartGame()">تمرین دوباره</button>
     </div>
 </div>
 
 <script>
+    function toEnglishDigits(str) {
+        if (str === null || str === undefined) return '';
+        const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        return String(str).replace(/[۰-۹]/g, (d) => farsi.indexOf(d)).replace(/[^0-9]/g, '');
+    }
+
+    function toPersianDigits(num) {
+        if (num === null || num === undefined) return '';
+        const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        return String(num).replace(/[0-9]/g, (digit) => farsi[parseInt(digit)]);
+    }
+
     const STORAGE_PREFIX = 'Maad_Khargoushi_V9_3x3_Full_';
     const TOTAL_STAGES = 1; 
 
@@ -404,18 +416,6 @@
                 el.focus();
             }
         }
-    }
-
-    function toPersianDigits(num) {
-        if (num === null || num === undefined) return '';
-        const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-        return String(num).replace(/[0-9]/g, (digit) => farsi[parseInt(digit)]);
-    }
-
-    function toEnglishDigits(str) {
-        if (str === null || str === undefined) return '';
-        const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-        return String(str).replace(/[۰-۹]/g, (d) => farsi.indexOf(d)).replace(/[^0-9]/g, '');
     }
 
     function loadProfileState() {
@@ -1130,7 +1130,7 @@
         gameState.currentScreen = 'game';
         saveProfileState();
         showScreen('screen-game'); 
-        updateProfileUI(); 
+        updateStats(); 
         newQuestion(); 
     }
 
@@ -1165,7 +1165,7 @@
             newQuestion();
         }
         showScreen('screen-game');
-        updateProfileUI();
+        updateStats();
     };
 
     async function authenticatePortalStudent() {
@@ -1276,17 +1276,6 @@
             });
         }
     });
-
-    function toEnglishDigits(str) { 
-        if (str === null || str === undefined) return '';
-        const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-        return String(str).replace(/[۰-۹]/g, (d) => farsi.indexOf(d)).replace(/[^0-9]/g, '');
-    }
-    function toPersianDigits(num) { 
-        if (num === null || num === undefined) return '';
-        const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-        return String(num).replace(/[0-9]/g, (digit) => farsi[parseInt(digit)]);
-    }
 </script>
 </body>
 </html>
