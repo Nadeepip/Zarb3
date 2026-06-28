@@ -233,7 +233,7 @@
     <div id="Screen-Loading" class="screen" style="display: none; min-height: 320px;">
         <div style="font-size: 3.5rem; margin-bottom: 15px;">🐇</div>
         <h2 style="color:#2980b9; margin-bottom:30px; font-weight: bold;">ضرب سه رقم در سه رقم</h2>
-        <div style="background:#e0e0e0; border-radius:12px; height:18px; width:80%; overflow:hidden; margin: 0 auto 18px auto; border:2px solid #2980b9; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">
+        <div style="background:#e0e0e0; border-radius:12px; height:18px; width:80%; max-width:400px; overflow:hidden; margin: 0 auto 18px auto; border:2px solid #2980b9; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">
             <div id="portal-loading-bar" style="background: linear-gradient(90deg, #ff007f, #aa00ff, #00b0ff); width:0%; height:100%; transition:width 0.3s ease;"></div>
         </div>
         <p id="portal-loading-text" style="font-size:13pt; color:#2980b9; font-weight:bold;"></p>
@@ -322,7 +322,7 @@
 
     <div id="portal-submitting-screen" class="screen" style="display: none; text-align:center; width: 100%;">
         <h3 id="portal-progress-title" style="color:#2980b9; margin-bottom:15px; font-weight:bold;">⏳ در حال ارسال نتایج به دیتابیس کلاس...</h3>
-        <div style="background:#eee; border-radius:10px; height:20px; width:100%; overflow:hidden; margin: 0 auto 15px auto; border:1px solid #ccc;">
+        <div style="background:#eee; border-radius:10px; height:20px; width:100%; overflow:hidden; margin-bottom:15px; border:1px solid #ccc;">
             <div id="portal-progress-bar" style="background:linear-gradient(90deg, #27ae60, #3498db); width:0%; height:100%; transition:width 0.2s;"></div>
         </div>
         <p id="portal-submit-status-text" style="font-size:12pt; color:#555; font-weight:bold; line-height:1.6; direction:rtl;"></p>
@@ -367,7 +367,7 @@
 
         <div id="portal-back-instruction" style="display:none; width: 100%;"></div>
 
-        <button id="restartBtn" class="btn" style="width: 100%; margin: 10px auto;" onclick="restartGame()">تمرین دوباره</button>
+        <button id="restartBtn" class="btn" onclick="restartGame()">تمرین دوباره</button>
     </div>
 </div>
 
@@ -577,7 +577,7 @@
         gameState.carryStates = {}; 
         gameState.addCarryValues = {};
         lastFocusedInputId = null; 
-        saveGameState();
+        localStorage.setItem(GAME_STATE_STORAGE, JSON.stringify(gameState));
         
         renderGrid(gameState.currentProblem);
         resetCarryOver(); 
@@ -1025,7 +1025,7 @@
         document.getElementById('repName').innerText = gameState.studentName;
         document.getElementById('repDate').innerText = dateStr + ' ' + timeStr;
         document.getElementById('repPlays').innerText = toPersianDigits(gameState.totalGames);
-        document.getElementById('repStars').innerText = toPersianDigits(gameState.totalStars);
+        document.getElementById('repStars').innerText = toPersianDigits(gameState.totalScore);
     }
 
     async function finishSession() {
@@ -1037,7 +1037,7 @@
         const earnedThisGame = 1;
         loadProfileState();
         gameState.totalGames++;
-        gameState.totalStars += earnedThisGame;
+        gameState.totalScore += earnedThisGame;
         gameState.currentScreen = 'report';
         gameState.hasEntered = true;
         saveProfileState();
@@ -1048,10 +1048,10 @@
             await Portal.submitProgress(earnedThisGame, {
                 onSuccess: (data) => {
                     gameState.totalGames = data.plays;
-                    gameState.totalStars = data.stars;
+                    gameState.totalScore = data.stars;
                     gameState.currentScreen = 'report';
                     saveProfileState();
-                    updateStats();
+                    updateProfileUI();
                     showScreen('screen-report');
                     populateReportData();
                     renderReport(data.goalReached, data.stars);
@@ -1059,15 +1059,15 @@
                 onFailure: (err) => {}
             });
         } else {
-            updateStats();
+            updateProfileUI();
             showScreen('screen-report');
             populateReportData();
-            renderReport(false, gameState.totalStars);
+            renderReport(false, gameState.totalScore);
         }
     }
 
     function renderReport(goalReached, currentStars) {
-        const stars = Portal.isPortalMode ? currentStars : gameState.totalStars;
+        const stars = Portal.isPortalMode ? currentStars : gameState.totalScore;
         const goalBadge = document.getElementById('portal-goal-reached-badge');
         const submitBadge = document.getElementById('portal-submit-badge');
         const restartBtn = document.getElementById('restartBtn');
@@ -1118,7 +1118,7 @@
         gameState.currentScreen = 'game';
         saveProfileState();
         showScreen('screen-game'); 
-        updateStats(); 
+        updateProfileUI(); 
         newQuestion(); 
     }
 
@@ -1128,7 +1128,7 @@
             onSuccess: (data) => {
                 loadProfileState();
                 gameState.totalGames = data.plays;
-                gameState.totalStars = data.stars;
+                gameState.totalScore = data.stars;
                 gameState.hasEntered = true;
                 gameState.currentScreen = 'report';
                 saveProfileState();
@@ -1153,31 +1153,43 @@
             newQuestion();
         }
         showScreen('screen-game');
-        updateStats();
+        updateProfileUI();
     };
 
     async function authenticatePortalStudent() {
         await Portal.authenticate({
             onSuccess: (data) => {
+                const welcomeSec = document.getElementById('portal-welcome-section');
+                if (welcomeSec) welcomeSec.style.display = 'block';
+                const regBtn = document.getElementById('register-btn');
+                if (regBtn) regBtn.style.display = 'block';
+                const errSec = document.getElementById('portal-error-section');
+                if (errSec) errSec.style.display = 'none';
+
                 STORAGE = `studentProfile_3x3Mult_${Portal.studentId}_${Portal.homeworkId}`;
                 GAME_STATE_STORAGE = `gameState_3x3Mult_${Portal.studentId}_${Portal.homeworkId}`;
                 
                 loadProfileState();
                 gameState.studentName = data.name || Portal.studentName || gameState.studentName || "دانش‌آموز";
                 gameState.totalGames = data.plays !== undefined ? data.plays : gameState.totalGames;
-                gameState.totalStars = data.stars !== undefined ? data.stars : gameState.totalStars;
+                gameState.totalScore = data.stars !== undefined ? data.stars : gameState.totalScore;
                 saveProfileState();
 
                 const savedState = checkSavedUnfinishedState();
                 const startBtn = document.getElementById('register-btn');
                 if (savedState) {
-                    startBtn.textContent = 'ادامه بازی (باقیمانده) 🔄';
-                    startBtn.style.backgroundColor = '#e67e22';
+                    if (startBtn) {
+                        startBtn.textContent = 'ادامه بازی (باقیمانده) 🔄';
+                        startBtn.style.backgroundColor = '#e67e22';
+                        startBtn.style.display = 'inline-block';
+                    }
                 } else {
-                    startBtn.textContent = 'شروع بازی تکلیف 🎮';
-                    startBtn.style.backgroundColor = '#27ae60';
+                    if (startBtn) {
+                        startBtn.textContent = 'شروع بازی تکلیف 🎮';
+                        startBtn.style.backgroundColor = '#27ae60';
+                        startBtn.style.display = 'inline-block';
+                    }
                 }
-                startBtn.style.display = 'inline-block';
 
                 const needsSubmitKey = `portal_needs_submit_${Portal.gameId}_${Portal.studentId}_${Portal.homeworkId}`;
                 const hasUnsentStar = localStorage.getItem(needsSubmitKey) === 'true';
@@ -1185,42 +1197,49 @@
                 if (hasUnsentStar) {
                     document.getElementById('ast-welcome').textContent = `سلام ${gameState.studentName} عزیز! 🌟`;
                     document.getElementById('ast-name').textContent = gameState.studentName;
-                    document.getElementById('ast-stars').textContent = toPersianDigits(gameState.totalStars) + ' ⭐';
+                    document.getElementById('ast-stars').textContent = toPersianDigits(gameState.totalScore) + ' ⭐';
                     document.getElementById('ast-req-stars').textContent = toPersianDigits(Portal.requiredStars) + ' ⭐';
                     showScreen('screen-assistant');
                 } else if (gameState.currentScreen === 'report') {
                     showScreen('screen-report');
                     populateReportData();
-                    renderReport(gameState.totalStars >= Portal.requiredStars, gameState.totalStars);
+                    renderReport(gameState.totalScore >= Portal.requiredStars, gameState.totalScore);
                 } else if (gameState.hasEntered || savedState) {
                     startGameAutomatically();
                 } else {
                     showScreen('screen-register');
-                    document.getElementById('portal-welcome-section').style.display = 'block';
-                    document.getElementById('register-btn').style.display = 'block';
-                    document.getElementById('portal-error-section').style.display = 'none';
-
                     document.getElementById('portal-student-name').textContent = gameState.studentName;
                     document.getElementById('portal-prev-plays').textContent = toPersianDigits(gameState.totalGames);
-                    document.getElementById('portal-prev-stars').textContent = toPersianDigits(gameState.totalStars) + ' ⭐';
+                    document.getElementById('portal-prev-stars').textContent = toPersianDigits(gameState.totalScore) + ' ⭐';
                     document.getElementById('portal-req-stars').textContent = toPersianDigits(Portal.requiredStars) + ' ⭐';
                 }
             },
             onFailure: (err) => {
                 showScreen('screen-register');
-                document.getElementById('register-container').style.display = 'none';
-                document.getElementById('portal-error-section').style.display = 'block';
+                const welcomeSec = document.getElementById('portal-welcome-section');
+                if (welcomeSec) welcomeSec.style.display = 'none';
+                const regBtn = document.getElementById('register-btn');
+                if (regBtn) regBtn.style.display = 'none';
+                const errSec = document.getElementById('portal-error-section');
+                if (errSec) errSec.style.display = 'block';
             },
             onGuestMode: () => {
-                document.getElementById('register-container').style.display = 'none';
+                showScreen('screen-register');
+                const welcomeSec = document.getElementById('portal-welcome-section');
+                if (welcomeSec) welcomeSec.style.display = 'none';
+                const regBtn = document.getElementById('register-btn');
+                if (regBtn) regBtn.style.display = 'none';
+                
                 const errSec = document.getElementById('portal-error-section');
                 if (errSec) {
-                    document.getElementById('portal-error-title').textContent = 'لینک ورود نامعتبر است';
-                    document.getElementById('portal-error-desc').innerHTML = 'جهت انجام این تکلیف، حتماً باید از طریق پنل مدرسه و با لینک اختصاصی خود وارد شوید.';
-                    document.getElementById('portal-retry-auth-btn').style.display = 'none';
+                    const errTitle = document.getElementById('portal-error-title');
+                    if (errTitle) errTitle.textContent = 'لینک ورود نامعتبر است';
+                    const errDesc = document.getElementById('portal-error-desc');
+                    if (errDesc) errDesc.innerHTML = 'جهت انجام این تکلیف، حتماً باید از طریق پنل مدرسه و با لینک اختصاصی خود وارد شوید.';
+                    const retryBtn = document.getElementById('portal-retry-auth-btn');
+                    if (retryBtn) retryBtn.style.display = 'none';
                     errSec.style.display = 'block';
                 }
-                showScreen('screen-register');
             }
         });
     }
