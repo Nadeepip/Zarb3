@@ -230,10 +230,10 @@
 <div class="container">
     <span class="school-name">دبستان معاد خرگوشی</span>
 
-    <div id="Screen-Loading" style="display: none;">
+    <div id="Screen-Loading" class="screen" style="display: none; min-height: 320px;">
         <div style="font-size: 3.5rem; margin-bottom: 15px;">🐇</div>
-        <h2 style="color:#2980b9; font-size:24pt; margin-bottom:30px; font-weight: bold;">ضرب سه رقم در سه رقم</h2>
-        <div style="background:#e0e0e0; border-radius:12px; height:18px; width:80%; max-width:400px; overflow:hidden; margin: 0 auto 18px auto; border:2px solid #2980b9; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">
+        <h2 style="color:#2980b9; margin-bottom:30px; font-weight: bold;">ضرب سه رقم در سه رقم</h2>
+        <div style="background:#e0e0e0; border-radius:12px; height:18px; width:80%; overflow:hidden; margin: 0 auto 18px auto; border:2px solid #2980b9; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">
             <div id="portal-loading-bar" style="background: linear-gradient(90deg, #ff007f, #aa00ff, #00b0ff); width:0%; height:100%; transition:width 0.3s ease;"></div>
         </div>
         <p id="portal-loading-text" style="font-size:13pt; color:#2980b9; font-weight:bold;"></p>
@@ -268,19 +268,19 @@
                     <div style="text-align:center;margin-bottom:15px;font-size:15pt;font-weight:bold;color:#1a5276;" id="portal-student-welcome">سلام دانش‌آموز زرنگم! 🌟</div>
                     
                     <div style="display: flex; flex-direction: column; gap: 10px; background: #f0f8ff; border-radius: 12px; padding: 15px; border: 1px dashed #87ceeb; margin-bottom: 20px; font-size:13pt;">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; justify-content:space-between; align-items: center; font-size:12.5pt; font-weight: bold; color: #333;">
                             <span>👤 نام دانش‌آموز:</span>
-                            <span id="portal-student-name" style="font-weight:bold; color:#2980b9;">---</span>
+                            <span id="portal-student-name" style="color: #2980b9;">---</span>
                         </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; justify-content:space-between; align-items: center; font-size:12pt; color: #333;">
                             <span>🎮 تعداد بازی‌های قبلی:</span>
                             <span id="portal-prev-plays" style="font-weight:bold; color:#e67e22;">۰</span>
                         </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; justify-content:space-between; align-items: center; font-size:12pt; color: #333;">
                             <span>⭐ ستاره‌های ثبت‌شده:</span>
                             <span id="portal-prev-stars" style="font-weight:bold; color:#f1c40f;">۰ ⭐</span>
                         </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; font-weight:bold; color:#27ae60; border-top:1px dashed #b7e1cd; padding-top:8px; margin-top:5px;">
+                        <div style="display:flex; justify-content:space-between; align-items: center; font-weight:bold; color:#27ae60; border-top:1px dashed #b7e1cd; padding-top:8px; margin-top:5px;">
                             <span>🎯 ستاره مورد نیاز تکلیف:</span>
                             <span id="portal-req-stars">۰ ⭐</span>
                         </div>
@@ -348,7 +348,7 @@
         </div>
     </div>
 
-    <div id="screen-report" class="screen" style="display: none;">
+    <div id="screen-report" class="page-container" style="display: none;">
         <h2>کارنامه عملکرد</h2>
         <div style="text-align: right; background: #fafafa; padding: 15px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 20px;">
             <p><strong>مدرسه:</strong> دبستان معاد خرگوشی</p>
@@ -439,7 +439,7 @@
         gameState.addCarryValues = {};
         for(let i=0; i<7; i++) {
             const el = document.getElementById(`ac_${i}`);
-            if(el && el.innerText) gameState.addCarryValues[`ac_${i}]`] = el.innerText;
+            if(el && el.innerText) gameState.addCarryValues[`ac_${i}`] = el.innerText;
         }
         localStorage.setItem(GAME_STATE_STORAGE, JSON.stringify({
             currentProblem: gameState.currentProblem,
@@ -1025,7 +1025,7 @@
         document.getElementById('repName').innerText = gameState.studentName;
         document.getElementById('repDate').innerText = dateStr + ' ' + timeStr;
         document.getElementById('repPlays').innerText = toPersianDigits(gameState.totalGames);
-        document.getElementById('repStars').innerText = toPersianDigits(gameState.totalScore);
+        document.getElementById('repStars').innerText = toPersianDigits(gameState.totalStars);
     }
 
     async function finishSession() {
@@ -1037,7 +1037,7 @@
         const earnedThisGame = 1;
         loadProfileState();
         gameState.totalGames++;
-        gameState.totalScore += earnedThisGame;
+        gameState.totalStars += earnedThisGame;
         gameState.currentScreen = 'report';
         gameState.hasEntered = true;
         saveProfileState();
@@ -1048,10 +1048,10 @@
             await Portal.submitProgress(earnedThisGame, {
                 onSuccess: (data) => {
                     gameState.totalGames = data.plays;
-                    gameState.totalScore = data.stars;
+                    gameState.totalStars = data.stars;
                     gameState.currentScreen = 'report';
                     saveProfileState();
-                    updateProfileUI();
+                    updateStats();
                     showScreen('screen-report');
                     populateReportData();
                     renderReport(data.goalReached, data.stars);
@@ -1059,15 +1059,15 @@
                 onFailure: (err) => {}
             });
         } else {
-            updateProfileUI();
+            updateStats();
             showScreen('screen-report');
             populateReportData();
-            renderReport(false, gameState.totalScore);
+            renderReport(false, gameState.totalStars);
         }
     }
 
     function renderReport(goalReached, currentStars) {
-        const stars = Portal.isPortalMode ? currentStars : gameState.totalScore;
+        const stars = Portal.isPortalMode ? currentStars : gameState.totalStars;
         const goalBadge = document.getElementById('portal-goal-reached-badge');
         const submitBadge = document.getElementById('portal-submit-badge');
         const restartBtn = document.getElementById('restartBtn');
@@ -1118,7 +1118,7 @@
         gameState.currentScreen = 'game';
         saveProfileState();
         showScreen('screen-game'); 
-        updateProfileUI(); 
+        updateStats(); 
         newQuestion(); 
     }
 
@@ -1128,7 +1128,7 @@
             onSuccess: (data) => {
                 loadProfileState();
                 gameState.totalGames = data.plays;
-                gameState.totalScore = data.stars;
+                gameState.totalStars = data.stars;
                 gameState.hasEntered = true;
                 gameState.currentScreen = 'report';
                 saveProfileState();
@@ -1153,7 +1153,7 @@
             newQuestion();
         }
         showScreen('screen-game');
-        updateProfileUI();
+        updateStats();
     };
 
     async function authenticatePortalStudent() {
@@ -1165,7 +1165,7 @@
                 loadProfileState();
                 gameState.studentName = data.name || Portal.studentName || gameState.studentName || "دانش‌آموز";
                 gameState.totalGames = data.plays !== undefined ? data.plays : gameState.totalGames;
-                gameState.totalScore = data.stars !== undefined ? data.stars : gameState.totalScore;
+                gameState.totalStars = data.stars !== undefined ? data.stars : gameState.totalStars;
                 saveProfileState();
 
                 const savedState = checkSavedUnfinishedState();
@@ -1185,13 +1185,13 @@
                 if (hasUnsentStar) {
                     document.getElementById('ast-welcome').textContent = `سلام ${gameState.studentName} عزیز! 🌟`;
                     document.getElementById('ast-name').textContent = gameState.studentName;
-                    document.getElementById('ast-stars').textContent = toPersianDigits(gameState.totalScore) + ' ⭐';
+                    document.getElementById('ast-stars').textContent = toPersianDigits(gameState.totalStars) + ' ⭐';
                     document.getElementById('ast-req-stars').textContent = toPersianDigits(Portal.requiredStars) + ' ⭐';
                     showScreen('screen-assistant');
                 } else if (gameState.currentScreen === 'report') {
                     showScreen('screen-report');
                     populateReportData();
-                    renderReport(gameState.totalScore >= Portal.requiredStars, gameState.totalScore);
+                    renderReport(gameState.totalStars >= Portal.requiredStars, gameState.totalStars);
                 } else if (gameState.hasEntered || savedState) {
                     startGameAutomatically();
                 } else {
@@ -1202,7 +1202,7 @@
 
                     document.getElementById('portal-student-name').textContent = gameState.studentName;
                     document.getElementById('portal-prev-plays').textContent = toPersianDigits(gameState.totalGames);
-                    document.getElementById('portal-prev-stars').textContent = toPersianDigits(gameState.totalScore) + ' ⭐';
+                    document.getElementById('portal-prev-stars').textContent = toPersianDigits(gameState.totalStars) + ' ⭐';
                     document.getElementById('portal-req-stars').textContent = toPersianDigits(Portal.requiredStars) + ' ⭐';
                 }
             },
