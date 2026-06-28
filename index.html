@@ -265,7 +265,7 @@
                     <div style="text-align:center;margin-bottom:12px;font-size:16pt;font-weight:bold;color:#2980b9;" id="portal-school-title">دبستان معاد خرگوشی</div>
                     <div style="text-align:center;margin-bottom:15px;font-size:15pt;font-weight:bold;color:#1a5276;" id="portal-student-welcome">سلام دانش‌آموز زرنگم! 🌟</div>
                     
-                    <div style="display: flex; flex-direction: column; gap: 10px; background: #f0f8ff; border-radius: 12px; padding: 15px; border: 1px dashed #87ceeb; margin-bottom: 20px; font-size:13pt;">
+                    <div style="display: flex; flex-direction: column; gap: 12px; background: #f0f8ff; border-radius: 12px; padding: 15px; border: 1px dashed #87ceeb; margin-bottom: 20px; font-size:13pt;">
                         <div style="display:flex; justify-content:space-between; align-items: center;">
                             <span>👤 نام دانش‌آموز:</span>
                             <span id="portal-student-name" style="color: #2980b9;">---</span>
@@ -292,7 +292,7 @@
 
         <div id="portal-error-section" style="display:none; text-align:center; padding:20px; max-width: 450px; margin: 20px auto; background: white; border-radius: 12px; box-shadow:0 6px 18px rgba(0,0,0,0.12); width: 100%;">
             <div style="font-size:2.5rem; margin-bottom:10px;">⚠️</div>
-            <h3 id="portal-error-title" style="color:#cc0000; margin-bottom:8px; font-weight:bold; font-size:15pt;">خطا در اتصال به پرتال کلاس</h3>
+            <h3 id="portal-error-title" style="color:#cc0000; margin-bottom:8px;">خطا در اتصال به پرتال کلاس</h3>
             <p id="portal-error-desc" style="color:#555; font-size:12pt; margin-bottom:15px; line-height:1.6;">جهت بارگذاری مشخصات و تکالیفت، اتصال به اینترنت الزامی است. لطفا شبکه‌ات را بررسی کن و مجدداً تلاش کن.</p>
             <button id="portal-retry-auth-btn" class="btn" style="background:#3c78d8; color:white; border:none; padding:12px 25px; border-radius:10px; font-weight:bold; cursor:pointer;" onclick="retryAuthentication()">🔄 تلاش مجدد برای اتصال</button>
         </div>
@@ -305,7 +305,7 @@
             <p style="font-size: 12pt; color: #333; margin: 0;">
                 بازی قبلی‌ات با موفقیت تمام شده بود، اما به خاطر قطع شدن اینترنت، ستاره‌ی طلایی‌ات به دفتر کلاسی معلم نرسیده بود. 
                 <br/>
-                اصلاً نگذار نگران باشی! نیازی به بازی دوباره نیست. دکمه زیر را بزن تا ستاره‌ی طلایی‌ات ثبت بشه و کارنامه‌اش رو ببینی. 😊
+                اصلاً نگذار نگران باشی! نیازی به بازی دوباره نیست. دکمه زیر را بزن تا ستاره‌ات ثبت بشه و کارنامه‌اش رو ببینی. 😊
             </p>
         </div>
         
@@ -365,7 +365,7 @@
 
         <div id="portal-back-instruction" style="display:none; width: 100%;"></div>
 
-        <button id="restartBtn" class="btn" onclick="restartGame()">تمرین دوباره</button>
+        <button id="restartBtn" class="btn" style="width: 100%; margin: 10px auto;" onclick="restartGame()">تمرین دوباره</button>
     </div>
 </div>
 
@@ -402,6 +402,18 @@
                 el.focus();
             }
         }
+    }
+
+    function toPersianDigits(num) {
+        if (num === null || num === undefined) return '';
+        const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        return String(num).replace(/[0-9]/g, (digit) => farsi[parseInt(digit)]);
+    }
+
+    function toEnglishDigits(str) {
+        if (str === null || str === undefined) return '';
+        const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        return String(str).replace(/[۰-۹]/g, (d) => farsi.indexOf(d)).replace(/[^0-9]/g, '');
     }
 
     function loadProfileState() {
