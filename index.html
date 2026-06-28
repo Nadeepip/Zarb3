@@ -47,7 +47,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        .container, .page-container {
+        .container {
             background: var(--box-bg); padding: 20px;
             border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             width: 90%; max-width: 600px; text-align: center; position: relative;
@@ -215,9 +215,9 @@
 <div class="container">
     <span class="school-name">دبستان معاد خرگوشی</span>
 
-    <div id="Screen-Loading" class="page-container" style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 350px; background: white; padding: 35px; box-sizing: border-box; width: 90%; max-width: 600px; margin: 20px auto;">
+    <div id="Screen-Loading" class="screen" style="display: none; min-height: 320px;">
         <div style="font-size: 3.5rem; margin-bottom: 15px;">🐇</div>
-        <h1 style="color:#2980b9; font-size:24pt; margin-bottom:30px; font-weight: bold;">ضرب سه رقم در سه رقم</h1>
+        <h2 style="color:#2980b9; margin-bottom:30px; font-weight: bold;">ضرب سه رقم در سه رقم</h2>
         <div style="background:#e0e0e0; border-radius:12px; height:18px; width:80%; overflow:hidden; margin: 0 auto 18px auto; border:2px solid #2980b9; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">
             <div id="portal-loading-bar" style="background: linear-gradient(90deg, #ff007f, #aa00ff, #00b0ff); width:0%; height:100%; transition:width 0.3s ease;"></div>
         </div>
@@ -288,7 +288,7 @@
         </div>
     </div>
 
-    <div id="screen-assistant" class="page-container" style="display: none;">
+    <div id="screen-assistant" class="screen" style="display: none;">
         <h2 style="color: #2980b9; margin-bottom: 20px;">🌟 دستیار ثبت ستاره 🌟</h2>
         <div style="background: #eef7eb; border: 2px solid #b7e1cd; border-radius: 15px; padding: 20px; margin-bottom: 25px; line-height: 1.8; text-align: right; direction: rtl;">
             <span style="font-size: 14pt; font-weight: bold; color: #1a5276; display: block; margin-bottom: 10px;" id="ast-welcome">سلام قهرمان!</span>
@@ -299,18 +299,18 @@
             </p>
         </div>
         
-        <div style="display: flex; flex-direction: column; gap: 10px; background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 25px; text-align: right; direction: rtl; font-size:12pt;">
+        <div style="display: flex; flex-direction: column; gap: 10px; background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 25px; text-align: right; direction: rtl; font-size:12pt; width: 100%;">
             <div style="display:flex; justify-content:space-between; align-items:center;"><span>👤 نام دانش‌آموز:</span><span id="ast-name" style="font-weight:bold; color:#2980b9;">---</span></div>
             <div style="display:flex; justify-content:space-between; align-items:center;"><span>⭐ ستاره‌های ثبت‌شده قبلی:</span><span id="ast-stars" style="font-weight:bold; color:#f1c40f;">۰ ⭐</span></div>
             <div style="display:flex; justify-content:space-between; align-items:center;"><span>🎯 ستاره هدف تکلیف:</span><span id="ast-req-stars" style="font-weight:bold; color:#27ae60;">۰ ⭐</span></div>
         </div>
 
-        <button class="btn" style="width: 100%; padding: 15px; font-size: 13pt; background-color: #27ae60;" onclick="submitAssistantStar()">🌟 ثبت ستاره‌ی طلایی من و دریافت کارنامه</button>
+        <button class="btn" style="width: 100%; padding: 15px; font-size: 13pt; background-color: #27ae60; margin: 0;" onclick="submitAssistantStar()">🌟 ثبت ستاره‌ی طلایی من و دریافت کارنامه</button>
     </div>
 
-    <div id="portal-submitting-screen" class="page-container" style="display: none; text-align:center;">
+    <div id="portal-submitting-screen" class="screen" style="display: none; text-align:center; width: 100%;">
         <h3 id="portal-progress-title" style="color:#2980b9; margin-bottom:15px; font-weight:bold;">⏳ در حال ارسال نتایج به دیتابیس کلاس...</h3>
-        <div style="background:#eee; border-radius:10px; height:20px; width:100%; overflow:hidden; margin-bottom:15px; border:1px solid #ccc;">
+        <div style="background:#eee; border-radius:10px; height:20px; width:100%; overflow:hidden; margin: 0 auto 15px auto; border:1px solid #ccc;">
             <div id="portal-progress-bar" style="background:linear-gradient(90deg, #27ae60, #3498db); width:0%; height:100%; transition:width 0.2s;"></div>
         </div>
         <p id="portal-submit-status-text" style="font-size:12pt; color:#555; font-weight:bold; line-height:1.6; direction:rtl;"></p>
@@ -336,7 +336,7 @@
         </div>
     </div>
 
-    <div id="screen-report" class="page-container" style="display: none;">
+    <div id="screen-report" class="screen" style="display: none;">
         <h2>کارنامه عملکرد</h2>
         <div style="text-align: right; background: #fafafa; padding: 15px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 20px;">
             <p><strong>مدرسه:</strong> دبستان معاد خرگوشی</p>
@@ -355,7 +355,7 @@
 
         <div id="portal-back-instruction" style="display:none; width: 100%;"></div>
 
-        <button id="restartBtn" class="btn" onclick="restartGame()">تمرین دوباره</button>
+        <button id="restartBtn" class="btn" style="width: 100%; margin: 10px auto;" onclick="restartGame()">تمرین دوباره</button>
     </div>
 </div>
 
@@ -495,8 +495,15 @@
         });
         const target = document.getElementById(id);
         if (target) {
-            target.style.display = 'block';
             target.classList.remove('hidden');
+            if (id === 'Screen-Loading' || id === 'screen-assistant' || id === 'portal-submitting-screen') {
+                target.style.display = 'flex';
+                target.style.flexDirection = 'column';
+                target.style.alignItems = 'center';
+                target.style.justifyContent = 'center';
+            } else {
+                target.style.display = 'block';
+            }
         }
         const carryBox = document.getElementById('carryOverBox');
         if (carryBox) {
@@ -1115,10 +1122,6 @@
     async function authenticatePortalStudent() {
         await Portal.authenticate({
             onSuccess: (data) => {
-                document.getElementById('portal-welcome-section').style.display = '';
-                document.getElementById('startButton').style.display = '';
-                document.getElementById('portal-error-section').style.display = 'none';
-
                 STORAGE = `studentProfile_3x3Mult_${Portal.studentId}_${Portal.homeworkId}`;
                 GAME_STATE_STORAGE = `gameState_3x3Mult_${Portal.studentId}_${Portal.homeworkId}`;
                 
@@ -1156,6 +1159,11 @@
                     startGameAutomatically();
                 } else {
                     showScreen('screen-register');
+                    document.getElementById('register-container').style.display = 'flex';
+                    document.getElementById('portal-error-section').style.display = 'none';
+                    document.getElementById('portal-welcome-section').style.display = 'block';
+                    document.getElementById('startButton').style.display = 'inline-block';
+
                     document.getElementById('portal-student-name').textContent = profileState.name;
                     document.getElementById('portal-prev-plays').textContent = toPersianNum(profileState.totalPlays);
                     document.getElementById('portal-prev-stars').textContent = toPersianNum(profileState.stars) + ' ⭐';
@@ -1202,8 +1210,14 @@
         }
     });
 
-    function toEnglishNum(str) { return str.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); }
-    function toPersianNum(num) { return num.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+    function toEnglishNum(str) { 
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); 
+    }
+    function toPersianNum(num) { 
+        if (num === null || num === undefined) return '';
+        return String(num).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); 
+    }
 </script>
 </body>
 </html>
