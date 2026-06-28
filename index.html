@@ -19,7 +19,6 @@
             font-weight: bold;
             font-style: normal;
         }
-
         :root {
             --primary: #2c3e50;
             --accent: #27ae60;
@@ -30,14 +29,12 @@
             --sent: #7f8c8d;
             --carry-red: #e74c3c;
         }
-
         * {
             box-sizing: border-box;
             font-family: 'Vazirmatn', sans-serif;
             margin: 0;
             padding: 0;
         }
-
         body {
             background-color: var(--bg);
             display: flex;
@@ -48,7 +45,18 @@
             padding: 10px;
             -webkit-tap-highlight-color: transparent;
         }
-
+        .screen {
+            display: none !important;
+        }
+        .screen.active {
+            display: block !important;
+        }
+        #portal-submitting-screen.active {
+            display: flex !important;
+        }
+        #screen-assistant.active {
+            display: block !important;
+        }
         .container {
             background: var(--box-bg);
             padding: 20px;
@@ -59,13 +67,11 @@
             text-align: center;
             position: relative;
         }
-
         h1, h2 {
             margin-bottom: 10px;
             color: #2980b9;
             font-size: 1.4em;
         }
-
         .school-name {
             font-size: 0.85em;
             color: #7f8c8d;
@@ -74,7 +80,6 @@
             padding-bottom: 8px;
             display: block;
         }
-
         .carry-over-container {
             position: absolute;
             top: 130px;
@@ -89,7 +94,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             z-index: 50;
         }
-
         .carry-input {
             width: 32px;
             height: 32px;
@@ -104,19 +108,16 @@
             margin: 0;
             transition: all 0.3s;
         }
-
         .carry-input.active-carry {
             border-color: #e74c3c;
             background-color: #fadbd8;
             font-weight: bold;
         }
-
         .carry-input.used {
             text-decoration: line-through;
             color: #aaa;
             background: #eee;
         }
-
         .btn {
             background-color: var(--accent);
             color: white;
@@ -128,23 +129,18 @@
             margin: 5px;
             font-weight: bold;
         }
-
         .btn-secondary {
             background-color: #e67e22;
         }
-
         .btn-info {
             background-color: #3498db;
         }
-
         .btn-hidden {
             display: none !important;
         }
-
         .btn-eraser {
             background-color: var(--wrong) !important;
         }
-
         .carry-clear-btn {
             padding: 5px 8px !important;
             font-size: 1.1em !important;
@@ -154,7 +150,6 @@
             border-radius: 5px;
             line-height: 1;
         }
-
         .row-check-btn {
             padding: 0;
             font-size: 0.75em;
@@ -168,7 +163,6 @@
             visibility: hidden;
             margin: 0 auto;
         }
-
         .math-grid {
             display: inline-grid;
             grid-template-columns: repeat(7, 40px) 70px;
@@ -178,7 +172,6 @@
             align-items: center;
             justify-content: center;
         }
-
         @media (max-width: 450px) {
             .math-grid {
                 grid-template-columns: repeat(7, 34px) 60px;
@@ -194,7 +187,6 @@
                 height: 18px;
             }
         }
-
         .cell {
             display: flex;
             align-items: center;
@@ -206,7 +198,6 @@
             width: 38px;
             height: 38px;
         }
-
         .add-carry-cell {
             display: flex;
             align-items: flex-end;
@@ -219,19 +210,16 @@
             margin-bottom: -8px;
             z-index: 10;
         }
-
         .highlight-digit {
             background-color: #ffe082;
             color: #d35400;
             border: 2px solid #f39c12;
             transform: scale(1.1);
         }
-
         .col-highlight {
             background-color: #e3f2fd;
             border-radius: 4px;
         }
-
         .input-cell {
             width: 38px;
             height: 38px;
@@ -243,59 +231,49 @@
             padding: 0;
             -moz-appearance: textfield;
         }
-
         .input-cell:focus {
             background: #e8f0fe;
             border-color: #2980b9;
         }
-
         .input-cell:read-only {
             background: #f0f0f0;
             color: #555;
             cursor: default;
         }
-
         .correct-input {
             background-color: #d4edda !important;
             border-color: var(--accent) !important;
             color: var(--accent);
         }
-
         .wrong-input {
             background-color: #f8d7da !important;
             border-color: var(--wrong) !important;
             color: var(--wrong);
             cursor: pointer;
         }
-
         @keyframes blink-fill {
             0% { background-color: #ffe082; transform: scale(1.1); box-shadow: 0 0 10px #f39c12; }
             50% { background-color: #f1c40f; transform: scale(1.15); border-color: #d35400; }
             100% { background-color: #d4edda; transform: scale(1); box-shadow: none; }
         }
-
         .newly-filled {
             animation: blink-fill 1.2s ease-in-out;
             z-index: 20;
         }
-
         @keyframes blink-text {
             0% { transform: scale(1.5); color: #d35400; }
             50% { transform: scale(1.8); color: #e74c3c; }
             100% { transform: scale(1); color: var(--carry-red); }
         }
-
         .newly-filled-text {
             animation: blink-text 1.2s ease-in-out;
         }
-
         .line {
             grid-column: 1 / 9;
             height: 2px;
             background-color: #333;
             margin: 4px 0;
         }
-
         .operator {
             grid-column: 1 / 2;
             display: flex;
@@ -304,11 +282,9 @@
             font-size: 1.4em;
             color: #555;
         }
-
         .hidden {
             display: none !important;
         }
-
         .hint-alert {
             background: #fff3cd;
             color: #856404;
@@ -321,7 +297,6 @@
             text-align: right;
             line-height: 1.6;
         }
-
         .stats-bar {
             display: flex;
             justify-content: space-between;
@@ -331,7 +306,6 @@
             margin-bottom: 15px;
             font-size: 0.9em;
         }
-
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -345,7 +319,6 @@
             justify-content: center;
             backdrop-filter: blur(2px);
         }
-
         .modal-box {
             background: white;
             padding: 25px 20px;
@@ -356,27 +329,23 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.25);
             animation: fadeIn 0.3s ease-out;
         }
-
         .modal-title {
             font-weight: bold;
             font-size: 1.2em;
             color: #c0392b;
             margin-bottom: 10px;
         }
-
         .modal-text {
             font-size: 0.95em;
             color: #555;
             line-height: 1.6;
             margin-bottom: 20px;
         }
-
         .modal-buttons {
             display: flex;
             justify-content: center;
             gap: 10px;
         }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -394,44 +363,18 @@
     <p id="portal-loading-text" style="font-size:13pt; color:#2c3e50; font-weight:bold;"></p>
 </div>
 
-<div class="container" id="screen-register">
-    <span class="school-name" id="portal-school-title">دبستان معاد خرگوشی</span>
-    
-    <div id="portal-welcome-section">
-        <h1 style="color:#2c3e50; font-size:1.5rem; margin-bottom:10px;">سلام دانش‌آموز زرنگم! 🌟</h1>
-        <p style="color:#555; margin-bottom:15px; font-size:0.95em;">بیا با هم ضرب سه رقم در سه رقم رو تمرین کنیم و ستاره بگیریم!</p>
-        
-        <div style="display: flex; flex-direction: column; gap: 10px; background: #f8f9fa; border-radius: 10px; padding: 15px; border: 1px dashed #bdc3c7; margin: 15px auto; text-align: right; direction: rtl; font-size: 1rem; width: 100%; max-width: 280px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span>👤 نامت:</span>
-                <span id="portal-student-name" style="font-weight:bold; color:#2c3e50;">---</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span>🎮 تعداد تلاش‌های قبلی:</span>
-                <span id="portal-prev-plays" style="font-weight:bold; color:#e67e22;">۰</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span>⭐ ستاره‌های ثبت‌شده:</span>
-                <span id="portal-prev-stars" style="font-weight:bold; color:#f39c12;">۰ ⭐</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; font-weight:bold; color:#27ae60; border-top:1px dashed #bdc3c7; padding-top:8px; margin-top:5px;">
-                <span>🎯 ستاره مورد نیاز تکلیف:</span>
-                <span id="portal-req-stars">۰ ⭐</span>
-            </div>
+<div id="portal-submitting-screen" class="screen" style="background:linear-gradient(135deg,#a1c4fd,#c2e9fb); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+    <div class="container" style="max-width: 450px;">
+        <h3 id="portal-progress-title" style="color:#2c3e50; margin-bottom:15px; font-weight:bold; font-size:16pt;">⏳ در حال ارسال نتایج به دیتابیس کلاس...</h3>
+        <div style="background:#eee; border-radius:10px; height:20px; width:100%; overflow:hidden; margin-bottom:15px; border:1px solid #ccc;">
+            <div id="portal-progress-bar" style="background:linear-gradient(90deg, #ff007f, #aa00ff, #00b0ff); width:0%; height:100%; transition:width 0.2s;"></div>
         </div>
-    </div>
-
-    <button id="startGame" style="background:#2ecc71; color:white; padding:12px 20px; border:none; border-radius:10px; cursor:pointer; width:100%; max-width:250px; display:block; margin:20px auto 0; font-weight: bold; font-size: 1.1rem; transition: background 0.3s;">شروع بازی تکلیف 🎮</button>
-
-    <div id="portal-error-section" style="display:none; text-align:center; padding:20px; max-width: 450px; margin: 20px auto; background: white; border-radius: 12px; box-shadow:0 6px 18px rgba(0,0,0,0.12);">
-        <div style="font-size:2.5rem; margin-bottom:10px;">⚠️</div>
-        <h3 id="portal-error-title" style="color:#d32f2f; margin-bottom:8px; font-weight:bold; font-size:15pt;">خطا در اتصال به پرتال کلاس</h3>
-        <p id="portal-error-desc" style="color:#555; font-size:12pt; margin-bottom:15px; line-height:1.6;">جهت بارگذاری مشخصات و تکالیفت، اتصال به اینترنت الزامی است. لطفا شبکه‌ات را بررسی کن و مجدداً تلاش کن.</p>
-        <button id="portal-retry-auth-btn" style="background:#1e90ff; color: white; padding: 10px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;" onclick="retryAuthentication()">🔄 تلاش مجدد برای اتصال</button>
+        <p id="portal-submit-status-text" style="font-size:12pt; color:#555; font-weight:bold; line-height:1.6; direction:rtl;"></p>
+        <button id="portal-retry-submit-btn" style="display:none; margin:15px auto 0; background:#e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">🔄 تلاش مجدد برای ارسال</button>
     </div>
 </div>
 
-<div id="screen-assistant" class="hidden">
+<div id="screen-assistant" class="screen">
     <div class="container" style="max-width: 450px;">
         <h2 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.5rem;">🌟 دستیار ثبت ستاره 🌟</h2>
         <div style="background: #fff; border: 2px dashed #3498db; border-radius: 12px; padding: 20px; margin-bottom: 25px; line-height: 1.8; text-align: justify; direction: rtl;">
@@ -459,77 +402,85 @@
     </div>
 </div>
 
-<div class="container hidden" id="screen-game">
-    <div id="carryOverBox" class="carry-over-container" style="display:none;">
-        <input type="tel" inputmode="numeric" id="carry_0" class="carry-input" oninput="handleCarryInput(this)" onclick="toggleStrike(this)">
-        <input type="tel" inputmode="numeric" id="carry_1" class="carry-input" oninput="handleCarryInput(this)" onclick="toggleStrike(this)">
-        <input type="tel" inputmode="numeric" id="carry_2" class="carry-input" oninput="handleCarryInput(this)" onclick="toggleStrike(this)">
-        <button id="clearCarryBtn" class="btn btn-eraser btn-hidden carry-clear-btn" onclick="resetCarryOver()">🧹</button>
-    </div>
+<div class="container">
+    <div class="screen active" id="screen-register">
+        <span class="school-name" id="portal-school-title">دبستان معاد خرگوشی</span>
+        
+        <div id="portal-welcome-section">
+            <h1 style="color:#2c3e50; font-size:1.5rem; margin-bottom:10px;">سلام دانش‌آموز زرنگم! 🌟</h1>
+            <p style="color:#555; margin-bottom:15px; font-size:0.95em;">بیا با هم ضرب سه رقم در سه رقم رو تمرین کنیم و ستاره بگیریم!</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px; background: #f8f9fa; border-radius: 10px; padding: 15px; border: 1px dashed #bdc3c7; margin: 15px auto; text-align: right; direction: rtl; font-size: 1rem; width: 100%; max-width: 280px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>👤 نامت:</span>
+                    <span id="portal-student-name" style="font-weight:bold; color:#2c3e50;">---</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>🎮 تعداد تلاش‌های قبلی:</span>
+                    <span id="portal-prev-plays" style="font-weight:bold; color:#e67e22;">۰</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>⭐ ستاره‌های ثبت‌شده:</span>
+                    <span id="portal-prev-stars" style="font-weight:bold; color:#f39c12;">۰ ⭐</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; font-weight:bold; color:#27ae60; border-top:1px dashed #bdc3c7; padding-top:8px; margin-top:5px;">
+                    <span>🎯 ستاره مورد نیاز تکلیف:</span>
+                    <span id="portal-req-stars">۰ ⭐</span>
+                </div>
+            </div>
+        </div>
 
-    <div id="confirmModal" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-title">⚠️ شروع حالت آموزشی</div>
-            <div class="modal-text">
-                آیا مطمئنی قهرمان؟ برای استفاده از راهنمای گام‌به‌گام، تمام پاسخ‌های فعلی‌ات پاک می‌شن و باید به راهنمایی‌ها گوش کنی. این دور فقط برای یادگیریه و ستاره‌ای براش ثبت نمی‌شه.
-            </div>
-            <div class="modal-buttons">
-                <button class="btn btn-secondary" onclick="startPracticeMode()">آره، شروع کن</button>
-                <button class="btn btn-eraser" onclick="closeModal()">نه، خودم حل می‌کنم</button>
-            </div>
+        <button id="startGame" style="background:#2ecc71; color:white; padding:12px 20px; border:none; border-radius:10px; cursor:pointer; width:100%; max-width:250px; display:block; margin:20px auto 0; font-weight: bold; font-size: 1.1rem; transition: background 0.3s;">شروع بازی تکلیف 🎮</button>
+
+        <div id="portal-error-section" style="display:none; text-align:center; padding:20px; max-width: 450px; margin: 20px auto; background: white; border-radius: 12px; box-shadow:0 6px 18px rgba(0,0,0,0.12);">
+            <div style="font-size:2.5rem; margin-bottom:10px;">⚠️</div>
+            <h3 id="portal-error-title" style="color:#d32f2f; margin-bottom:8px; font-weight:bold; font-size:15pt;">خطا در اتصال به پرتال کلاس</h3>
+            <p id="portal-error-desc" style="color:#555; font-size:12pt; margin-bottom:15px; line-height:1.6;">جهت بارگذاری مشخصات و تکالیفت، اتصال به اینترنت الزامی است. لطفا شبکه‌ات را بررسی کن و مجدداً تلاش کن.</p>
+            <button id="portal-retry-auth-btn" style="background:#1e90ff; color: white; padding: 10px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;" onclick="retryAuthentication()">🔄 تلاش مجدد برای اتصال</button>
         </div>
     </div>
 
-    <div class="stats-bar">
-        <span id="dispName">دانش‌آموز</span>
-        <span>⭐ ستاره: <span id="dispStars">۰</span></span>
-    </div>
-
-    <h2>ضرب سه رقم در سه رقم</h2>
-
-    <div id="game-area"></div>
-
-    <div id="hintAlertBox" class="hint-alert"></div>
-
-    <div style="margin-top: 20px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-        <button id="hintBtn" class="btn btn-secondary" onclick="revealOneStepHint()">راهنمای گام‌به‌گام 💡</button>
-        <button id="finishBtn" class="btn btn-hidden" style="background:#7f8c8d;" onclick="finishSession()">ثبت امتیاز و مشاهده کارنامه 🏆</button>
-        <button id="newQBtn" class="btn btn-info btn-hidden" onclick="newQuestion()">سوال بعدی 🎮</button>
-    </div>
-</div>
-
-<div id="portal-submitting-screen" class="hidden" style="background:linear-gradient(135deg,#a1c4fd,#c2e9fb); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
-    <div class="container" style="max-width: 450px;">
-        <h3 id="portal-progress-title" style="color:#2c3e50; margin-bottom:15px; font-weight:bold; font-size:16pt;">⏳ در حال ارسال نتایج به دیتابیس کلاس...</h3>
-        <div style="background:#eee; border-radius:10px; height:20px; width:100%; overflow:hidden; margin-bottom:15px; border:1px solid #ccc;">
-            <div id="portal-progress-bar" style="background:linear-gradient(90deg, #ff007f, #aa00ff, #00b0ff); width:0%; height:100%; transition:width 0.2s;"></div>
+    <div class="screen" id="screen-game">
+        <div class="stats-bar">
+            <span id="dispName">دانش‌آموز</span>
+            <span>⭐ ستاره: <span id="dispStars">۰</span></span>
         </div>
-        <p id="portal-submit-status-text" style="font-size:12pt; color:#555; font-weight:bold; line-height:1.6; direction:rtl;"></p>
-        <button id="portal-retry-submit-btn" style="display:none; margin:15px auto 0; background:#e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;" onclick="retrySubmission()">🔄 تلاش مجدد برای ارسال</button>
-    </div>
-</div>
 
-<div class="container hidden" id="screen-report">
-    <h2>کارنامه درخشانت 🌟</h2>
-    <div style="text-align: right; background: #fafafa; padding: 15px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 20px;">
-        <p><strong>مدرسه:</strong> <span id="repSchool">دبستان معاد خرگوشی</span></p>
-        <p><strong>نام دانش‌آموز:</strong> <span id="repName">---</span></p>
-        <p><strong>تاریخ و زمان:</strong> <span id="repDate">---</span></p>
-        <p><strong>تعداد تلاش‌ها:</strong> <span id="repPlays">۰</span></p>
-        <p><strong>ستاره‌های گرفته‌شده:</strong> <span id="repStars">۰</span></p>
-        <p id="portal-req-stars-row" style="display:none;"><strong>🎯 ستاره مورد نیاز تکلیف:</strong> <span id="repReqStars">۰ ⭐</span></p>
+        <h2>ضرب سه رقم در سه رقم</h2>
+
+        <div id="game-area"></div>
+
+        <div id="hintAlertBox" class="hint-alert"></div>
+
+        <div style="margin-top: 20px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+            <button id="hintBtn" class="btn btn-secondary" onclick="revealOneStepHint()">راهنمای گام‌به‌گام 💡</button>
+            <button id="finishBtn" class="btn btn-hidden" style="background:#7f8c8d;" onclick="finishSession()">ثبت امتیاز و مشاهده کارنامه 🏆</button>
+            <button id="newQBtn" class="btn btn-info btn-hidden" onclick="newQuestion()">سوال بعدی 🎮</button>
+        </div>
     </div>
 
-    <div id="portal-submit-badge" style="display:none; background:#fff3e0; border:1px solid #ffe082; color:#e65100; padding:15px; border-radius:12px; margin-bottom:12px; font-weight:bold; font-size:12.5pt; line-height:1.6; text-align:right; width: 100%;"></div>
+    <div class="screen" id="screen-report">
+        <h2>کارنامه درخشانت 🌟</h2>
+        <div style="text-align: right; background: #fafafa; padding: 15px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 20px;">
+            <p><strong>مدرسه:</strong> <span id="repSchool">دبستان معاد خرگوشی</span></p>
+            <p><strong>نام دانش‌آموز:</strong> <span id="repName">---</span></p>
+            <p><strong>تاریخ و زمان:</strong> <span id="repDate">---</span></p>
+            <p><strong>تعداد تلاش‌ها:</strong> <span id="repPlays">۰</span></p>
+            <p><strong>ستاره‌های گرفته‌شده:</strong> <span id="repStars">۰</span></p>
+            <p id="portal-req-stars-row" style="display:none;"><strong>🎯 ستاره مورد نیاز تکلیف:</strong> <span id="repReqStars">۰ ⭐</span></p>
+        </div>
 
-    <div id="portal-goal-reached-badge" style="display:none; background:#e8f5e9; border:2px solid #2e7d32; color:#1b5e20; padding:15px; border-radius:12px; margin-bottom:15px; font-weight:bold; font-size:12.5pt; line-height:1.6; direction:rtl; text-align:right; width: 100%;">
-        🎉 هوراااا قهرمان پرتلاش! هدف تکلیف رو کاملاً ترکوندی و همه‌ی ستاره‌های مورد نیاز رو گرفتی! تو فوق‌العاده‌ای! 🥇 حالا می‌تونی با خیال راحت به پرتال برگردی. خداقوت! ❤️
+        <div id="portal-submit-badge" style="display:none; background:#fff3e0; border:1px solid #ffe082; color:#e65100; padding:15px; border-radius:12px; margin-bottom:12px; font-weight:bold; font-size:12.5pt; line-height:1.6; text-align:right; width: 100%;"></div>
+
+        <div id="portal-goal-reached-badge" style="display:none; background:#e8f5e9; border:2px solid #2e7d32; color:#1b5e20; padding:15px; border-radius:12px; margin-bottom:15px; font-weight:bold; font-size:12.5pt; line-height:1.6; direction:rtl; text-align:right; width: 100%;">
+            🎉 هوراااا قهرمان پرتلاش! هدف تکلیف رو کاملاً ترکوندی و همه‌ی ستاره‌های مورد نیاز رو گرفتی! تو فوق‌العاده‌ای! 🥇 حالا می‌تونی با خیال راحت به پرتال برگردی. خداقوت! ❤️
+        </div>
+
+        <div id="portal-back-instruction" style="display:none; width: 100%;"></div>
+
+        <br>
+        <button id="playAgainBtn" class="btn" onclick="restartGame()">تلاش دوباره 🔄</button>
     </div>
-
-    <div id="portal-back-instruction" style="display:none; width: 100%;"></div>
-
-    <br>
-    <button id="playAgainBtn" class="btn" onclick="restartGame()">تلاش دوباره 🔄</button>
 </div>
 
 <script>
@@ -648,13 +599,13 @@
         screens.forEach(s => {
             const el = document.getElementById(s);
             if (el) {
-                el.classList.add('hidden');
+                el.classList.remove('active');
                 el.style.display = '';
             }
         });
         const target = document.getElementById(id);
         if (target) {
-            target.classList.remove('hidden');
+            target.classList.add('active');
             target.style.display = '';
         }
         const carryBox = document.getElementById('carryOverBox');
@@ -961,9 +912,9 @@
             inp.readOnly = true; 
         });
         
-        for(let i=1; i<=4; i++) {
-             const btn = document.getElementById(`btn_row_${i}`);
-             resetBtnToCheck(btn, i);
+        for(let r=1; r<=4; r++) {
+             const btn = document.getElementById(`btn_row_${r}`);
+             resetBtnToCheck(btn, r);
              btn.style.visibility = 'hidden';
         }
         
@@ -1326,12 +1277,6 @@
 
     window.retryAuthentication = function() {
         authenticatePortalStudent();
-    };
-
-    window.retrySubmission = function() {
-        document.getElementById('portal-submit-status-text').style.color = '#555';
-        document.getElementById('portal-progress-bar').style.backgroundColor = '#7b1fa2';
-        Portal.submitProgress(null, Portal._lastSubmitCallbacks);
     };
 
     async function authenticatePortalStudent() {
