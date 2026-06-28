@@ -367,9 +367,9 @@
     let GAME_STATE_STORAGE = 'gameState_3x3Mult_default';
 
     let profileState = {
-        name: "", 
-        stars: 0, 
-        totalPlays: 0,
+        studentName: "", 
+        totalStars: 0, 
+        totalGames: 0,
         hasEntered: false,
         currentScreen: 'register'
     };
@@ -404,12 +404,12 @@
                 profileState = JSON.parse(stored); 
             } catch(e){}
         }
-        if (!profileState) {
+        if (typeof profileState !== 'object' || profileState === null) {
             profileState = {};
         }
-        if (typeof profileState.name === 'undefined') profileState.name = '';
-        if (typeof profileState.stars === 'undefined') profileState.stars = 0;
-        if (typeof profileState.totalPlays === 'undefined') profileState.totalPlays = 0;
+        if (typeof profileState.studentName === 'undefined') profileState.studentName = '';
+        if (typeof profileState.totalStars === 'undefined') profileState.totalStars = 0;
+        if (typeof profileState.totalGames === 'undefined') profileState.totalGames = 0;
         if (typeof profileState.hasEntered === 'undefined') profileState.hasEntered = false;
         if (typeof profileState.currentScreen === 'undefined') profileState.currentScreen = 'register';
     }
@@ -419,6 +419,7 @@
     function saveGridState() {
         gameState.gridValues = {};
         document.querySelectorAll('.input-cell').forEach(inp => gameState.gridValues[inp.id] = inp.value);
+        gameState.carryStates = {};
         document.querySelectorAll('.carry-input').forEach(inp => {
             gameState.gridValues[inp.id] = inp.value;
             gameState.carryStates[inp.id] = inp.classList.contains('used');
@@ -437,6 +438,9 @@
             try {
                 gameState = JSON.parse(saved);
             } catch(e){}
+        }
+        if (typeof gameState !== 'object' || gameState === null) {
+            gameState = {};
         }
         if (!gameState.gridValues) gameState.gridValues = {};
         if (!gameState.carryStates) gameState.carryStates = {};
@@ -522,8 +526,8 @@
     function updateStats() {
         const starsEl = document.getElementById('dispStars');
         const nameEl = document.getElementById('dispName');
-        if(starsEl) starsEl.innerText = toPersianNum(profileState.stars);
-        if(nameEl) nameEl.innerText = profileState.name;
+        if(starsEl) starsEl.innerText = toPersianNum(profileState.totalStars);
+        if(nameEl) nameEl.innerText = profileState.studentName;
     }
 
     function generateRandom3Digit() { return Math.floor(Math.random() * 900) + 100; }
@@ -705,7 +709,9 @@
         if(inputs[0].disabled) btn.style.visibility = 'hidden'; else btn.style.visibility = allFilled ? "visible" : "hidden";
     }
     function getRowExpectedValue(rowIdx) {
-        const p = gameState.currentProblem; const n2_str = p.n2.toString();
+        const p = gameState.currentProblem; 
+        if (!p || !p.n2) return 0;
+        const n2_str = p.n2.toString();
         switch(rowIdx) {
             case 1: return p.n1 * parseInt(n2_str[2]);
             case 2: return p.n1 * parseInt(n2_str[1]) * 10;
@@ -729,20 +735,22 @@
         });
         const btn = document.getElementById(`btn_row_${rowIdx}`);
         if (rowIsCorrect) {
-            btn.style.visibility = 'hidden';
+            if (btn) btn.style.visibility = 'hidden';
             document.querySelectorAll(`input[id^="inp_${rowIdx}_"]`).forEach(inp => inp.disabled = true);
             if(rowIdx === 4 && !gameState.currentGameUsedHint) {
                 document.getElementById('finishBtn').classList.remove('btn-hidden');
             }
         } else if (!silent) {
-            btn.innerText = "پاک‌کن"; btn.classList.add('btn-eraser');
-            btn.onclick = function() { 
-                document.querySelectorAll(`input[id^="inp_${rowIdx}_"]`).forEach(i => {
-                    i.value = ""; 
-                    i.classList.remove('wrong-input', 'correct-input');
-                }); 
-                saveGridState(); resetBtnToCheck(btn, rowIdx); 
-            };
+            if (btn) {
+                btn.innerText = "پاک‌کن"; btn.classList.add('btn-eraser');
+                btn.onclick = function() { 
+                    document.querySelectorAll(`input[id^="inp_${rowIdx}_"]`).forEach(i => {
+                        i.value = ""; 
+                        i.classList.remove('wrong-input', 'correct-input');
+                    }); 
+                    saveGridState(); resetBtnToCheck(btn, rowIdx); 
+                };
+            }
         }
         return rowIsCorrect;
     }
@@ -809,8 +817,10 @@
         
         for(let r=1; r<=4; r++) {
              const btn = document.getElementById(`btn_row_${r}`);
-             resetBtnToCheck(btn, r);
-             btn.style.visibility = 'hidden';
+             if (btn) {
+                 resetBtnToCheck(btn, r);
+                 btn.style.visibility = 'hidden';
+             }
         }
         
         resetCarryOver();
@@ -990,10 +1000,10 @@
             year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
         }).format(now);
 
-        document.getElementById('repName').innerText = profileState.name;
+        document.getElementById('repName').innerText = profileState.studentName;
         document.getElementById('repDate').innerText = dateStr;
-        document.getElementById('repPlays').innerText = toPersianNum(profileState.totalPlays);
-        document.getElementById('repStars').innerText = toPersianNum(profileState.stars);
+        document.getElementById('repPlays').innerText = toPersianNum(profileState.totalGames);
+        document.getElementById('repStars').innerText = toPersianNum(profileState.totalStars);
     }
 
     async function finishSession() {
@@ -1004,8 +1014,8 @@
         
         const earnedThisGame = 1;
         loadProfile();
-        profileState.totalPlays++;
-        profileState.stars += earnedThisGame;
+        profileState.totalGames++;
+        profileState.totalStars += earnedThisGame;
         profileState.currentScreen = 'report';
         profileState.hasEntered = true;
         saveProfile();
@@ -1015,8 +1025,8 @@
             showScreen('portal-submitting-screen');
             await Portal.submitProgress(earnedThisGame, {
                 onSuccess: (data) => {
-                    profileState.totalPlays = data.plays;
-                    profileState.stars = data.stars;
+                    profileState.totalGames = data.plays;
+                    profileState.totalStars = data.stars;
                     profileState.currentScreen = 'report';
                     saveProfile();
                     updateStats();
@@ -1030,12 +1040,12 @@
             updateStats();
             showScreen('screen-report');
             populateReportData();
-            renderReport(false, profileState.stars);
+            renderReport(false, profileState.totalStars);
         }
     }
 
     function renderReport(goalReached, currentStars) {
-        const stars = Portal.isPortalMode ? currentStars : profileState.stars;
+        const stars = Portal.isPortalMode ? currentStars : profileState.totalStars;
         const goalBadge = document.getElementById('portal-goal-reached-badge');
         const submitBadge = document.getElementById('portal-submit-badge');
         const restartBtn = document.getElementById('restartBtn');
@@ -1060,7 +1070,11 @@
                 const remaining = Portal.requiredStars - stars;
                 submitBadge.innerHTML = `✨ آفرین دانش‌آموز زرنگم! تو <b>${toPersianNum(stars)}</b> ستاره از <b>${toPersianNum(Portal.requiredStars)}</b> ستاره‌ی این تکلیف رو گرفتی! ⭐ فقط به <b>${toPersianNum(remaining)}</b> ستاره‌ی دیگه نیاز داری تا تیک تکلیف بخوره. بدو برو بعدی رو حل کن! 🏆`;
                 submitBadge.style.display = 'block';
-                restartBtn.style.display = 'block';
+                if (restartBtn) {
+                    restartBtn.style.display = 'block';
+                    restartBtn.textContent = 'گرفتن ستاره بیشتر 🎮';
+                    restartBtn.style.backgroundColor = '#27ae60';
+                }
                 backInstruction.innerHTML = `
                     <div style="background:#fff3e0; border:1px solid #ffe082; color:#e65100; padding:12px; border-radius:12px; margin-top:10px; font-size:11.5pt; line-height:1.6; text-align:center;">
                         💡 اگر می‌خواهی بعداً بازی کنی، با زدن <b>دکمه بازگشت (Back) گوشی</b> به پرتال برگرد.
@@ -1091,8 +1105,8 @@
         await Portal.submitProgress(null, {
             onSuccess: (data) => {
                 loadProfile();
-                profileState.totalPlays = data.plays;
-                profileState.stars = data.stars;
+                profileState.totalGames = data.plays;
+                profileState.totalStars = data.stars;
                 profileState.hasEntered = true;
                 profileState.currentScreen = 'report';
                 saveProfile();
@@ -1110,7 +1124,8 @@
     const startGameAutomatically = () => {
         loadProfile();
         const savedState = checkSavedUnfinishedState();
-        if (savedState) {
+        if (savedState && savedState.currentProblem) {
+            renderGrid(savedState.currentProblem);
             restoreGridState();
         } else {
             newQuestion();
@@ -1126,9 +1141,9 @@
                 GAME_STATE_STORAGE = `gameState_3x3Mult_${Portal.studentId}_${Portal.homeworkId}`;
                 
                 loadProfile();
-                profileState.name = data.name || Portal.studentName || profileState.name || "دانش‌آموز";
-                profileState.totalPlays = data.plays !== undefined ? data.plays : profileState.totalPlays;
-                profileState.stars = data.stars !== undefined ? data.stars : profileState.stars;
+                profileState.studentName = data.name || Portal.studentName || profileState.studentName || "دانش‌آموز";
+                profileState.totalGames = data.plays !== undefined ? data.plays : profileState.totalGames;
+                profileState.totalStars = data.stars !== undefined ? data.stars : profileState.totalStars;
                 saveProfile();
 
                 const savedState = checkSavedUnfinishedState();
@@ -1146,15 +1161,15 @@
                 const hasUnsentStar = localStorage.getItem(needsSubmitKey) === 'true';
 
                 if (hasUnsentStar) {
-                    document.getElementById('ast-welcome').textContent = `سلام ${profileState.name} عزیز! 🌟`;
-                    document.getElementById('ast-name').textContent = profileState.name;
-                    document.getElementById('ast-stars').textContent = toPersianNum(profileState.stars) + ' ⭐';
+                    document.getElementById('ast-welcome').textContent = `سلام ${profileState.studentName} عزیز! 🌟`;
+                    document.getElementById('ast-name').textContent = profileState.studentName;
+                    document.getElementById('ast-stars').textContent = toPersianNum(profileState.totalStars) + ' ⭐';
                     document.getElementById('ast-req-stars').textContent = toPersianNum(Portal.requiredStars) + ' ⭐';
                     showScreen('screen-assistant');
                 } else if (profileState.currentScreen === 'report') {
                     showScreen('screen-report');
                     populateReportData();
-                    renderReport(profileState.stars >= Portal.requiredStars, profileState.stars);
+                    renderReport(profileState.totalStars >= Portal.requiredStars, profileState.totalStars);
                 } else if (profileState.hasEntered || savedState) {
                     startGameAutomatically();
                 } else {
@@ -1164,9 +1179,9 @@
                     document.getElementById('portal-welcome-section').style.display = 'block';
                     document.getElementById('startButton').style.display = 'inline-block';
 
-                    document.getElementById('portal-student-name').textContent = profileState.name;
-                    document.getElementById('portal-prev-plays').textContent = toPersianNum(profileState.totalPlays);
-                    document.getElementById('portal-prev-stars').textContent = toPersianNum(profileState.stars) + ' ⭐';
+                    document.getElementById('portal-student-name').textContent = profileState.studentName;
+                    document.getElementById('portal-prev-plays').textContent = toPersianNum(profileState.totalGames);
+                    document.getElementById('portal-prev-stars').textContent = toPersianNum(profileState.totalStars) + ' ⭐';
                     document.getElementById('portal-req-stars').textContent = toPersianNum(Portal.requiredStars) + ' ⭐';
                 }
             },
